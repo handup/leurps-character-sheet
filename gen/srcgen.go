@@ -573,24 +573,6 @@ var allEnums = []*enumInfo{
 		},
 	},
 	{
-		Pkg:  "model/gurps/enums/encumbrance",
-		Name: "level",
-		Desc: "holds the encumbrance level",
-		Values: []*enumValue{
-			{
-				Name: "No",
-				Key:  "none",
-			},
-			{Key: "light"},
-			{Key: "medium"},
-			{Key: "heavy"},
-			{
-				Key:    "extra_heavy",
-				String: "X-Heavy",
-			},
-		},
-	},
-	{
 		Pkg:  "model/gurps/enums/feature",
 		Name: "type",
 		Desc: "holds the type of a Feature",

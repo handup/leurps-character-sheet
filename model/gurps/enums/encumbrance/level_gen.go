@@ -35,7 +35,6 @@ var Levels = []Level{
 	Light,
 	Medium,
 	Heavy,
-	ExtraHeavy,
 }
 
 // Level holds the encumbrance level.

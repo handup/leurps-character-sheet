@@ -33,7 +33,7 @@ func newBite(owner WeaponOwner) *Weapon {
 	bite.Reach.Max = 0
 	bite.Defaults = []*SkillDefault{
 		{
-			DefaultType: DexterityID,
+			DefaultType: "ag",
 		},
 		{
 			DefaultType: SkillID,
@@ -62,7 +62,7 @@ func newPunch(owner WeaponOwner) *Weapon {
 	punch.Reach.Max = 0
 	punch.Defaults = []*SkillDefault{
 		{
-			DefaultType: DexterityID,
+			DefaultType: "ag",
 		},
 		{
 			DefaultType: SkillID,
@@ -98,7 +98,7 @@ func newKick(owner WeaponOwner) *Weapon {
 	kick.Reach.Max = fxp.One
 	kick.Defaults = []*SkillDefault{
 		{
-			DefaultType: DexterityID,
+			DefaultType: "ag",
 			Modifier:    -fxp.Two,
 		},
 		{

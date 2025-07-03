@@ -16,7 +16,6 @@ import (
 	"hash"
 	"io/fs"
 	"log/slog"
-	"math"
 	"slices"
 	"strconv"
 	"strings"
@@ -27,7 +26,6 @@ import (
 	"github.com/richardwilkes/gcs/v5/model/gurps/enums/container"
 	"github.com/richardwilkes/gcs/v5/model/gurps/enums/encumbrance"
 	"github.com/richardwilkes/gcs/v5/model/gurps/enums/feature"
-	"github.com/richardwilkes/gcs/v5/model/gurps/enums/progression"
 	"github.com/richardwilkes/gcs/v5/model/gurps/enums/selfctrl"
 	"github.com/richardwilkes/gcs/v5/model/gurps/enums/skillsel"
 	"github.com/richardwilkes/gcs/v5/model/gurps/enums/stlimit"
@@ -227,9 +225,9 @@ func (e *Entity) MarshalJSON() ([]byte, error) {
 		},
 	}
 	data.Version = jio.CurrentDataVersion
-	for i, one := range encumbrance.Levels {
-		data.Calc.Move[i] = e.Move(one)
-		data.Calc.Dodge[i] = e.Dodge(one)
+	for i := range encumbrance.Levels {
+		data.Calc.Move[i] = e.Move(encumbrance.No)
+		data.Calc.Dodge[i] = e.Dodge(encumbrance.No)
 	}
 	return json.Marshal(&data)
 }
@@ -1136,43 +1134,13 @@ func (e *Entity) BasicLift() fxp.Weight {
 	if e.basicLiftCache != -1 {
 		return e.basicLiftCache
 	}
-	e.basicLiftCache = e.BasicLiftForST(e.LiftingStrength())
+	e.basicLiftCache = e.BasicLiftForST(e.ResolveAttributeCurrent("lift"))
 	return e.basicLiftCache
 }
 
 // BasicLiftForST returns the entity's Basic Lift as if their base ST was the given value.
 func (e *Entity) BasicLiftForST(st fxp.Int) fxp.Weight {
-	st = st.Trunc()
-	if IsThresholdOpMet(threshold.HalveST, e.Attributes) {
-		st = st.Div(fxp.Two)
-		if st != st.Trunc() {
-			st = st.Trunc() + fxp.One
-		}
-	}
-	if st < fxp.One {
-		return 0
-	}
-	var v fxp.Int
-	if e.SheetSettings.DamageProgression == progression.KnowingYourOwnStrength {
-		var diff fxp.Int
-		if st > fxp.Nineteen {
-			diff = st.Div(fxp.Ten).Trunc() - fxp.One
-			st -= diff.Mul(fxp.Ten)
-		}
-		v = fxp.From(math.Pow(10, fxp.As[float64](st)/10)).Mul(fxp.Two)
-		if st <= fxp.Six {
-			v = v.Mul(fxp.Ten).Round().Div(fxp.Ten)
-		} else {
-			v = v.Round()
-		}
-		v = v.Mul(fxp.From(math.Pow(10, fxp.As[float64](diff))))
-	} else {
-		v = st.Mul(st).Div(fxp.Five)
-	}
-	if v >= fxp.Ten {
-		v = v.Round()
-	}
-	return fxp.Weight(v.Mul(fxp.Ten).Trunc().Div(fxp.Ten))
+	return fxp.Weight(st.Mul(fxp.Two))
 }
 
 func (e *Entity) isSkillLevelResolutionExcluded(name, specialization string) bool {

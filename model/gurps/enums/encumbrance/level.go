@@ -23,9 +23,7 @@ func (enum Level) WeightMultiplier() fxp.Int {
 	case Medium:
 		return fxp.Three
 	case Heavy:
-		return fxp.Six
-	case ExtraHeavy:
-		return fxp.Ten
+		return fxp.Five
 	default:
 		return No.WeightMultiplier()
 	}
